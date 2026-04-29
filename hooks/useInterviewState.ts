@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Phase, AccountabilityMode, SessionState, DocumentSection } from '@/types'
+import { Phase, AccountabilityMode, SessionState, DocumentSection, DocumentSections } from '@/types'
 
 const initialState: SessionState = {
   phase: 'name',
@@ -93,6 +93,10 @@ export function useInterviewState() {
     setState(s => ({ ...s, phase: 'complete' }))
   }, [])
 
+  const setDocument = useCallback((document: DocumentSections) => {
+    setState(s => ({ ...s, document }))
+  }, [])
+
   return {
     state,
     submitName,
@@ -109,5 +113,6 @@ export function useInterviewState() {
     setUserName,
     setAccountabilityMode,
     completeReveal,
+    setDocument,
   }
 }
