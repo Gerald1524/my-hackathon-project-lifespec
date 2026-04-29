@@ -97,6 +97,14 @@ export function useInterviewState() {
     setState(s => ({ ...s, document }))
   }, [])
 
+  const setDocumentId = useCallback((documentId: string) => {
+    setState(s => ({ ...s, documentId }))
+  }, [])
+
+  const setDocumentUrl = useCallback((documentUrl: string) => {
+    setState(s => ({ ...s, documentUrl }))
+  }, [])
+
   return {
     state,
     submitName,
@@ -114,5 +122,7 @@ export function useInterviewState() {
     setAccountabilityMode,
     completeReveal,
     setDocument,
+    setDocumentId,
+    setDocumentUrl,
   }
 }

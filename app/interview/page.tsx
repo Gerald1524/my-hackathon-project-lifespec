@@ -8,6 +8,7 @@ import { CommitmentScreen } from '@/components/onboarding/CommitmentScreen'
 import { WelcomeMoment } from '@/components/onboarding/WelcomeMoment'
 import { InterviewPhase } from '@/components/interview/InterviewPhase'
 import { DocumentReveal } from '@/components/document/DocumentReveal'
+import { CompletePage } from '@/components/complete/CompletePage'
 
 export default function InterviewPage() {
   const interview = useInterviewState()
@@ -50,14 +51,8 @@ export default function InterviewPage() {
     )
   }
 
-  if (state.phase === 'complete') {
-    return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--bg)' }}>
-        <p style={{ color: 'var(--cream)', fontFamily: 'var(--font-cormorant)', fontSize: '1.5rem', textAlign: 'center', maxWidth: '32rem' }}>
-          Your document is ready. (Complete page coming in step 10.)
-        </p>
-      </div>
-    )
+  if (state.phase === 'complete' && state.document) {
+    return <CompletePage document={state.document} userName={state.userName} />
   }
 
   return (
