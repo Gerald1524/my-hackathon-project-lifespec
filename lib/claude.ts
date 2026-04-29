@@ -14,6 +14,7 @@ export interface InterviewRequest {
     userFollowUp?: string
   }>
   whatIfForm?: 1 | 2 | 3
+  reframeHints?: string[]
 }
 
 export function buildSystemPrompt(request: InterviewRequest, reframeHints?: string[]): string {
