@@ -9,6 +9,8 @@ import { DepthChoice } from '@/components/interview/DepthChoice'
 import { questions } from '@/lib/questions'
 import { useInterviewState } from '@/hooks/useInterviewState'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
+import { DocumentPanel } from '@/components/document/DocumentPanel'
+import { ProgressSymbol } from '@/components/interview/ProgressSymbol'
 
 const STUCK_PHRASES = [
   "i don't know", "i dont know", "not sure", "can't think", "cant think",
@@ -168,60 +170,81 @@ export function InterviewPhase({ interview }: Props) {
 
   const inputDisabled = phaseState.status !== 'question' || !inputActive
 
+  // Screen warmth: interpolate from #0D0D0D (Q0) to #110B00 (Q9) over 9 questions
+  const bgColors = [
+    '#0D0D0D', '#0E0D0C', '#0E0C0B', '#0F0C0A', '#0F0B09',
+    '#100B08', '#100B07', '#100A06', '#110A05', '#110B00',
+  ]
+  const warmBg = bgColors[Math.min(state.currentQuestion, 8)]
+
   return (
-    <div
-      className="flex flex-col items-center justify-center min-h-screen px-4"
-      style={{ background: 'var(--bg)', paddingTop: '2rem', paddingBottom: '6rem' }}
-    >
-      <div style={{ width: '100%', maxWidth: '40rem' }}>
-        <QuestionDisplay
-          question={currentQ}
-          userName={state.userName}
-          onInputActivated={() => {
-            if (phaseState.status === 'question') setInputActive(true)
-          }}
-        />
+    <div style={{ background: warmBg, minHeight: '100vh', display: 'flex', transition: 'background 2s ease' }}>
+      {/* Conversation area */}
+      <div style={{
+        flex: '1 1 65%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 2rem 6rem',
+      }}>
+        <ProgressSymbol completedQuestions={state.currentQuestion} />
 
-        {phaseState.status === 'loading' && (
-          <p style={{
-            textAlign: 'center',
-            color: 'var(--muted)',
-            fontSize: '0.875rem',
-            marginTop: '2rem',
-            letterSpacing: '0.1em',
-          }}>
-            …
-          </p>
-        )}
+        <div style={{ width: '100%', maxWidth: '40rem' }}>
+          <QuestionDisplay
+            question={currentQ}
+            userName={state.userName}
+            onInputActivated={() => {
+              if (phaseState.status === 'question') setInputActive(true)
+            }}
+          />
 
-        {phaseState.status === 'aiResponse' && (
-          <AIResponse text={phaseState.text} onComplete={handleAIResponseComplete} />
-        )}
-
-        {phaseState.status === 'affirmation' && (
-          <div style={{ maxWidth: '32rem', margin: '2rem auto', textAlign: 'center' }}>
+          {phaseState.status === 'loading' && (
             <p style={{
-              fontFamily: 'var(--font-cormorant)',
-              color: 'var(--cream)',
-              fontSize: '1.2rem',
-              lineHeight: 1.7,
-              fontStyle: 'italic',
+              textAlign: 'center',
+              color: 'var(--muted)',
+              fontSize: '0.875rem',
+              marginTop: '2rem',
+              letterSpacing: '0.1em',
             }}>
-              {AFFIRMATION}
+              …
             </p>
-          </div>
-        )}
+          )}
 
-        {phaseState.status === 'depthChoice' && (
-          <DepthChoice onGoDeeper={handleGoDeeper} onMoveForward={handleMoveForward} />
-        )}
+          {phaseState.status === 'aiResponse' && (
+            <AIResponse text={phaseState.text} onComplete={handleAIResponseComplete} />
+          )}
 
-        {(phaseState.status === 'question' || phaseState.status === 'loading') && (
-          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
-            <VoiceInput disabled={inputDisabled} onAnswer={handleAnswer} />
-            <TextInput disabled={inputDisabled} onAnswer={handleAnswer} />
-          </div>
-        )}
+          {phaseState.status === 'affirmation' && (
+            <div style={{ maxWidth: '32rem', margin: '2rem auto', textAlign: 'center' }}>
+              <p style={{
+                fontFamily: 'var(--font-cormorant)',
+                color: 'var(--cream)',
+                fontSize: '1.2rem',
+                lineHeight: 1.7,
+                fontStyle: 'italic',
+              }}>
+                {AFFIRMATION}
+              </p>
+            </div>
+          )}
+
+          {phaseState.status === 'depthChoice' && (
+            <DepthChoice onGoDeeper={handleGoDeeper} onMoveForward={handleMoveForward} />
+          )}
+
+          {(phaseState.status === 'question' || phaseState.status === 'loading') && (
+            <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+              <VoiceInput disabled={inputDisabled} onAnswer={handleAnswer} />
+              <TextInput disabled={inputDisabled} onAnswer={handleAnswer} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Document panel */}
+      <div style={{ flex: '0 0 35%', minHeight: '100vh', position: 'sticky', top: 0 }}>
+        <DocumentPanel documentFragments={state.documentFragments} />
       </div>
     </div>
   )

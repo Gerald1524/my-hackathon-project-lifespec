@@ -12,3 +12,18 @@ html, body {
   background: var(--bg);
   min-height: 100vh;
 }
+
+@keyframes fragmentFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes goldPulse {
+  0% { color: var(--cream); }
+  50% { color: var(--gold); }
+  100% { color: var(--cream); }
+}
+
+.fragment-enter {
+  animation: fragmentFadeIn 0.5s ease forwards, goldPulse 1.5s ease 0.3s forwards;
+}
