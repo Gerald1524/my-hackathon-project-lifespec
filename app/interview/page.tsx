@@ -6,8 +6,7 @@ import { NameInput } from '@/components/onboarding/NameInput'
 import { AccountabilityMeter } from '@/components/onboarding/AccountabilityMeter'
 import { CommitmentScreen } from '@/components/onboarding/CommitmentScreen'
 import { WelcomeMoment } from '@/components/onboarding/WelcomeMoment'
-import { QuestionDisplay } from '@/components/interview/QuestionDisplay'
-import { questions } from '@/lib/questions'
+import { InterviewPhase } from '@/components/interview/InterviewPhase'
 
 export default function InterviewPage() {
   const interview = useInterviewState()
@@ -33,18 +32,7 @@ export default function InterviewPage() {
   }
 
   if (state.phase === 'interview') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-4" style={{ background: 'var(--bg)' }}>
-        <QuestionDisplay
-          question={questions[state.currentQuestion]}
-          userName={state.userName}
-          onInputActivated={() => {/* input activation in step 6 */}}
-        />
-        <p style={{ color: 'var(--muted)', marginTop: '2rem', fontSize: '0.875rem' }}>
-          Q{state.currentQuestion + 1} / 9 — Input coming in step 6
-        </p>
-      </div>
-    )
+    return <InterviewPhase interview={interview} />
   }
 
   // reveal / complete — stubs for now
